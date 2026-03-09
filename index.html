@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PUBG Korean Support · Meta-M Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      background: radial-gradient(ellipse at 20% 10%, #0F1A0A 0%, #080B10 40%, #0A0D14 100%);
+      color: #E5E7EB;
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-thumb { background: #1F2937; border-radius: 4px; }
+
+    .container { max-width: 1120px; margin: 0 auto; padding: 28px 24px; }
+
+    /* Header */
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+    .header-left .brand-label { font-size: 11px; color: #F97316; font-family: 'DM Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .header-left h1 { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; color: #F9FAFB; line-height: 1.1; }
+    .last-updated { color: #374151; font-size: 12px; margin-top: 5px; font-family: 'DM Mono', monospace; }
+
+    /* Status Badge */
+    .status-badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 20px; padding: 4px 12px; border: 1px solid transparent; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .status-badge span { font-size: 12px; font-family: 'DM Mono', monospace; }
+    .status-idle    { background: #1F2937; border-color: rgba(107,114,128,0.3); }
+    .status-idle .status-dot { background: #374151; }
+    .status-idle span { color: #6B7280; }
+    .status-loading { background: #1C3144; border-color: rgba(56,189,248,0.3); }
+    .status-loading .status-dot { background: #38BDF8; }
+    .status-loading span { color: #38BDF8; }
+    .status-success { background: #14290F; border-color: rgba(74,222,128,0.3); }
+    .status-success .status-dot { background: #4ADE80; box-shadow: 0 0 6px #4ADE80; }
+    .status-success span { color: #4ADE80; }
+    .status-error   { background: #2D1515; border-color: rgba(248,113,113,0.3); }
+    .status-error .status-dot { background: #F87171; }
+    .status-error span { color: #F87171; }
+
+    /* Webhook Panel */
+    .webhook-panel { background: rgba(255,255,255,0.02); border: 1px solid #1F2937; border-radius: 12px; padding: 14px 16px; min-width: 320px; }
+    .webhook-label { font-size: 11px; color: #4B5563; font-family: 'DM Mono', monospace; margin-bottom: 8px; letter-spacing: 0.06em; }
+    .webhook-row { display: flex; gap: 8px; }
+    .webhook-input {
+      flex: 1; background: #0D1117; border: 1px solid #1F2937; border-radius: 8px;
+      color: #9CA3AF; padding: 8px 12px; font-size: 12px; font-family: 'DM Mono', monospace; outline: none;
+    }
+    .webhook-input:focus { border-color: #F97316; }
+    .btn-connect {
+      cursor: pointer; border-radius: 8px; padding: 8px 16px;
+      background: rgba(249,115,22,0.15); color: #F97316; font-size: 13px; font-weight: 600;
+      font-family: 'DM Sans', sans-serif; border: 1px solid rgba(249,115,22,0.3);
+      transition: all 0.18s;
+    }
+    .btn-connect:hover { background: rgba(249,115,22,0.25); }
+    .btn-refresh {
+      cursor: pointer; border: 1px solid #1F2937; background: none; border-radius: 8px;
+      padding: 7px 14px; font-size: 13px; color: #6B7280; transition: all 0.18s; display: none;
+    }
+    .btn-refresh:hover { border-color: #38BDF8; color: #38BDF8; }
+    .webhook-hint { font-size: 11px; margin-top: 6px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 2px; margin-bottom: 24px; background: rgba(255,255,255,0.02); padding: 4px; border-radius: 10px; width: fit-content; }
+    .tab-btn { background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #4B5563; transition: all 0.18s; }
+    .tab-btn.active { background: rgba(249,115,22,0.1); color: #F97316; font-weight: 600; }
+
+    /* Metric Cards */
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    .metric-card {
+      background: rgba(255,255,255,0.03); border-radius: 14px; padding: 22px;
+      display: flex; flex-direction: column; gap: 6px; transition: all 0.2s; cursor: default;
+    }
+    .metric-icon { font-size: 20px; }
+    .metric-label { font-size: 11px; color: #4B5563; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+    .metric-value { font-size: 32px; font-weight: 800; font-family: 'Syne', sans-serif; line-height: 1.1; }
+    .metric-sub { font-size: 11px; color: #374151; }
+
+    /* Chart containers */
+    .charts-row { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; }
+    .chart-card { background: rgba(255,255,255,0.02); border: 1px solid #1F2937; border-radius: 14px; padding: 22px; }
+    .chart-card h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #D1D5DB; margin-bottom: 18px; }
+    .chart-wrap { position: relative; }
+
+    /* Category legend */
+    .cat-legend { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
+    .cat-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; }
+    .cat-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+    .cat-name { color: #6B7280; flex: 1; }
+    .cat-pct { color: #9CA3AF; font-family: 'DM Mono', monospace; }
+
+    /* Sort buttons */
+    .sort-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+    .sort-label { color: #4B5563; font-size: 12px; font-family: 'DM Mono', monospace; margin-right: 4px; }
+    .sort-btn {
+      background: none; border: 1px solid #1F2937; cursor: pointer; padding: 4px 12px;
+      border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 11px; color: #4B5563; transition: all 0.18s;
+    }
+    .sort-btn:hover, .sort-btn.active { background: rgba(249,115,22,0.12); border-color: #F97316; color: #F97316; }
+
+    /* Table */
+    .table-wrap { background: rgba(255,255,255,0.01); border: 1px solid #1F2937; border-radius: 14px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { border-bottom: 1px solid #1F2937; }
+    th { padding: 13px 16px; font-size: 11px; color: #374151; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+    th.left { text-align: left; }
+    th.center { text-align: center; }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.12s; }
+    tbody tr:hover { background: rgba(249,115,22,0.03); }
+    td { padding: 15px 16px; }
+    td.center { text-align: center; }
+    .rank-cell { font-family: 'DM Mono', monospace; font-size: 13px; }
+    .name-cell { font-weight: 600; color: #F3F4F6; font-size: 14px; }
+    .tickets-cell { color: #F97316; font-weight: 700; font-family: 'DM Mono', monospace; }
+    .frt-cell { font-family: 'DM Mono', monospace; }
+    .csat-badge { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace; }
+    .csat-count { color: #4B5563; font-family: 'DM Mono', monospace; }
+
+    /* Trend section */
+    .trend-section { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Category cards */
+    .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+    .cat-card { border-radius: 14px; padding: 20px; background: rgba(255,255,255,0.02); }
+    .cat-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .cat-card-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+    .cat-card-pct { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 800; }
+    .cat-bar-bg { background: rgba(255,255,255,0.04); border-radius: 3px; height: 4px; margin-bottom: 12px; }
+    .cat-bar-fill { height: 100%; border-radius: 3px; }
+    .cat-count { font-size: 12px; color: #4B5563; }
+
+    /* Footer */
+    .footer { margin-top: 28px; padding: 14px 16px; background: rgba(255,255,255,0.01); border-radius: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .footer span { font-size: 11px; color: #1F2937; font-family: 'DM Mono', monospace; }
+
+    /* Tab panels */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    @media (max-width: 700px) {
+      .charts-row { grid-template-columns: 1fr; }
+      .header { flex-direction: column; }
+      .webhook-panel { min-width: unset; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="brand-label">
+        <span>PUBG · Korean Support · Meta-M</span>
+        <div class="status-badge status-idle" id="statusBadge">
+          <div class="status-dot"></div>
+          <span id="statusText">연결 대기</span>
+        </div>
+      </div>
+      <h1>상담원 성과 대시보드</h1>
+      <div class="last-updated" id="lastUpdated" style="display:none"></div>
+    </div>
+
+    <div class="webhook-panel">
+      <div class="webhook-label">N8N WEBHOOK URL</div>
+      <div class="webhook-row">
+        <input class="webhook-input" id="webhookInput" type="text" placeholder="https://your-n8n.cloud/webhook/..." />
+        <button class="btn-connect" onclick="connectWebhook()">연결</button>
+        <button class="btn-refresh" id="refreshBtn" onclick="refreshData()">↻</button>
+      </div>
+      <div class="webhook-hint" id="webhookHint" style="color:#374151">n8n Webhook URL을 입력하면 실제 Zendesk 데이터가 표시돼요</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview', this)">개요</button>
+    <button class="tab-btn" onclick="switchTab('agents', this)">상담원별</button>
+    <button class="tab-btn" onclick="switchTab('trends', this)">추이</button>
+    <button class="tab-btn" onclick="switchTab('categories', this)">유형분석</button>
+  </div>
+
+  <!-- Overview -->
+  <div class="tab-panel active" id="tab-overview">
+    <div class="metrics-grid" id="metricsGrid"></div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3>상담원별 처리 건수</h3>
+        <div class="chart-wrap" style="height:210px"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>문의 유형</h3>
+        <div class="chart-wrap" style="height:140px"><canvas id="pieChart"></canvas></div>
+        <div class="cat-legend" id="catLegend"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agents -->
+  <div class="tab-panel" id="tab-agents">
+    <div class="sort-row">
+      <span class="sort-label">정렬:</span>
+      <button class="sort-btn active" onclick="sortAgents('tickets', this)">처리건수</button>
+      <button class="sort-btn" onclick="sortAgents('csat', this)">CSAT</button>
+      <button class="sort-btn" onclick="sortAgents('frt', this)">응답시간</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="left">#</th>
+            <th class="left">상담원</th>
+            <th class="center">처리 건수</th>
+            <th class="center">평균 FRT</th>
+            <th class="center">CSAT</th>
+            <th class="center">CSAT 응답수</th>
+          </tr>
+        </thead>
+        <tbody id="agentTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Trends -->
+  <div class="tab-panel" id="tab-trends">
+    <div class="trend-section">
+      <div class="chart-card">
+        <h3>주간 티켓 추이</h3>
+        <div class="chart-wrap" style="height:230px"><canvas id="lineChart1"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>주간 CSAT 추이 (%)</h3>
+        <div class="chart-wrap" style="height:200px"><canvas id="lineChart2"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="tab-panel" id="tab-categories">
+    <div class="cat-grid" id="catGrid"></div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>pubgsupport.zendesk.com · Brand 114094569274 · Group: Korean Support</span>
+    <span id="footerStatus">⚠ 샘플 데이터 표시 중</span>
+  </div>
+</div>
+
+<script>
+  // ── Data ──────────────────────────────────────────────────
+  const FALLBACK = [
+    { name: "김민준", tickets: 142, avgFRT: "4.2h", csat: "96.5%", csatResponses: 86 },
+    { name: "이서연", tickets: 128, avgFRT: "5.1h", csat: "91.2%", csatResponses: 68 },
+    { name: "박지호", tickets: 156, avgFRT: "3.8h", csat: "98.1%", csatResponses: 104 },
+    { name: "최수아", tickets: 99,  avgFRT: "6.3h", csat: "83.4%", csatResponses: 54 },
+    { name: "정태양", tickets: 134, avgFRT: "4.7h", csat: "94.0%", csatResponses: 79 },
+  ];
+  const WEEKLY = [
+    { week: "1주", tickets: 189, csat: 94.1 },
+    { week: "2주", tickets: 214, csat: 95.3 },
+    { week: "3주", tickets: 198, csat: 93.7 },
+    { week: "4주", tickets: 231, csat: 96.2 },
+  ];
+  const CATEGORIES = [
+    { name: "계정/로그인", value: 31, color: "#F97316" },
+    { name: "결제/환불",  value: 27, color: "#FACC15" },
+    { name: "게임 오류",  value: 22, color: "#38BDF8" },
+    { name: "해킹/제재",  value: 13, color: "#F87171" },
+    { name: "기타",      value: 7,  color: "#64748B" },
+  ];
+
+  let agentData = [...FALLBACK];
+  let sortKey = "tickets";
+  let webhookUrl = "";
+  let barChartInst = null, pieChartInst = null, line1Inst = null, line2Inst = null;
+
+  // ── Helpers ───────────────────────────────────────────────
+  function totals() {
+    const total = agentData.reduce((s, a) => s + a.tickets, 0);
+    const avgFRT = (agentData.reduce((s, a) => s + parseFloat(a.avgFRT), 0) / agentData.length).toFixed(1);
+    const csatVals = agentData.map(a => parseFloat(a.csat)).filter(v => !isNaN(v));
+    const avgCsat = csatVals.length ? (csatVals.reduce((s, v) => s + v, 0) / csatVals.length).toFixed(1) : "N/A";
+    return { total, avgFRT, avgCsat };
+  }
+
+  function setStatus(s) {
+    const badge = document.getElementById('statusBadge');
+    const text = document.getElementById('statusText');
+    const hint = document.getElementById('webhookHint');
+    badge.className = 'status-badge status-' + s;
+    const labels = { idle: '연결 대기', loading: '불러오는 중', success: '연동 완료', error: '연결 실패' };
+    text.textContent = labels[s];
+    if (s === 'success') {
+      hint.style.color = '#4ADE80';
+      hint.textContent = '✓ Zendesk 실시간 데이터 연동 완료';
+      document.getElementById('footerStatus').textContent = '✓ Zendesk 실시간 데이터';
+      document.getElementById('refreshBtn').style.display = 'block';
+    } else if (s === 'error') {
+      hint.style.color = '#F87171';
+      document.getElementById('footerStatus').textContent = '⚠ 샘플 데이터 표시 중';
+    } else if (s === 'loading') {
+      hint.style.color = '#38BDF8';
+      hint.textContent = '데이터를 불러오는 중...';
+    }
+  }
+
+  // ── Fetch ─────────────────────────────────────────────────
+  async function connectWebhook() {
+    const url = document.getElementById('webhookInput').value.trim();
+    if (!url.startsWith('http')) return;
+    webhookUrl = url;
+    await fetchData(url);
+  }
+
+  async function refreshData() { if (webhookUrl) await fetchData(webhookUrl); }
+
+  async function fetchData(url) {
+    setStatus('loading');
+    try {
+      const res = await fetch(url, { mode: 'cors' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+      const data = Array.isArray(json) ? json : json.data || json.results || [];
+      if (!data.length) throw new Error('데이터가 비어있어요');
+      agentData = data;
+      setStatus('success');
+      const lu = document.getElementById('lastUpdated');
+      lu.style.display = 'block';
+      lu.textContent = '마지막 업데이트: ' + new Date().toLocaleString('ko-KR');
+    } catch (e) {
+      setStatus('error');
+      document.getElementById('webhookHint').textContent = '⚠ ' + e.message + ' — 샘플 데이터로 표시 중';
+    }
+    renderAll();
+  }
+
+  // ── Render ────────────────────────────────────────────────
+  function renderAll() {
+    renderMetrics();
+    renderBarChart();
+    renderPieChart();
+    renderAgentTable();
+    renderTrends();
+    renderCategories();
+  }
+
+  function renderMetrics() {
+    const t = totals();
+    const cards = [
+      { icon: '🎫', label: '총 처리 티켓', value: t.total.toLocaleString(), sub: `상담원 ${agentData.length}명`, color: '#F97316' },
+      { icon: '⚡', label: '평균 FRT',     value: `${t.avgFRT}h`,            sub: '첫 응답 시간',     color: '#38BDF8' },
+      { icon: '⭐', label: '평균 CSAT',    value: `${t.avgCsat}%`,           sub: '만족도 응답 기준', color: '#FACC15' },
+      { icon: '🏢', label: '브랜드',       value: 'PUBG',                    sub: 'Brand ID: 114094569274', color: '#4ADE80' },
+    ];
+    document.getElementById('metricsGrid').innerHTML = cards.map(c => `
+      <div class="metric-card" style="border:1px solid ${c.color}20"
+           onmouseenter="this.style.background='${c.color}08';this.style.borderColor='${c.color}50'"
+           onmouseleave="this.style.background='rgba(255,255,255,0.03)';this.style.borderColor='${c.color}20'">
+        <div class="metric-icon">${c.icon}</div>
+        <div class="metric-label">${c.label}</div>
+        <div class="metric-value" style="color:${c.color}">${c.value}</div>
+        <div class="metric-sub">${c.sub}</div>
+      </div>`).join('');
+  }
+
+  function renderBarChart() {
+    const ctx = document.getElementById('barChart').getContext('2d');
+    if (barChartInst) barChartInst.destroy();
+    barChartInst = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: agentData.map(a => a.name),
+        datasets: [{ label: '티켓', data: agentData.map(a => a.tickets), backgroundColor: 'rgba(249,115,22,0.75)', borderRadius: 4 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#4B5563' } },
+          y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#4B5563' } }
+        }
+      }
+    });
+  }
+
+  function renderPieChart() {
+    const ctx = document.getElementById('pieChart').getContext('2d');
+    if (pieChartInst) pieChartInst.destroy();
+    pieChartInst = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: CATEGORIES.map(c => c.name),
+        datasets: [{ data: CATEGORIES.map(c => c.value), backgroundColor: CATEGORIES.map(c => c.color), borderWidth: 0 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        cutout: '62%'
+      }
+    });
+    document.getElementById('catLegend').innerHTML = CATEGORIES.map(c => `
+      <div class="cat-legend-item">
+        <div class="cat-dot" style="background:${c.color}"></div>
+        <span class="cat-name">${c.name}</span>
+        <span class="cat-pct">${c.value}%</span>
+      </div>`).join('');
+  }
+
+  function renderAgentTable() {
+    const sorted = [...agentData].sort((a, b) => {
+      if (sortKey === 'tickets') return b.tickets - a.tickets;
+      if (sortKey === 'csat') return parseFloat(b.csat) - parseFloat(a.csat);
+      if (sortKey === 'frt') return parseFloat(a.avgFRT) - parseFloat(b.avgFRT);
+      return 0;
+    });
+    document.getElementById('agentTableBody').innerHTML = sorted.map((a, i) => {
+      const cv = parseFloat(a.csat);
+      const cc = cv >= 95 ? '#4ADE80' : cv >= 85 ? '#FACC15' : '#F87171';
+      const fv = parseFloat(a.avgFRT);
+      const fc = fv <= 4 ? '#4ADE80' : fv <= 6 ? '#FACC15' : '#F87171';
+      return `<tr>
+        <td class="rank-cell" style="color:${i===0?'#FACC15':'#374151'}">${i===0?'🥇':'0'+(i+1)}</td>
+        <td class="name-cell">${a.name}</td>
+        <td class="center tickets-cell">${a.tickets}</td>
+        <td class="center frt-cell" style="color:${fc}">${a.avgFRT}</td>
+        <td class="center"><span class="csat-badge" style="background:${cc}20;color:${cc}">${a.csat}</span></td>
+        <td class="center csat-count">${a.csatResponses}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function renderTrends() {
+    const opts = (yMin) => ({
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#4B5563' } },
+        y: { min: yMin, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#4B5563' } }
+      }
+    });
+    const lineStyle = (color) => ({
+      borderColor: color, backgroundColor: color + '15',
+      pointBackgroundColor: color, borderWidth: 2.5, pointRadius: 4, tension: 0.3, fill: true
+    });
+
+    if (line1Inst) line1Inst.destroy();
+    line1Inst = new Chart(document.getElementById('lineChart1').getContext('2d'), {
+      type: 'line',
+      data: { labels: WEEKLY.map(w => w.week), datasets: [{ label: '티켓', data: WEEKLY.map(w => w.tickets), ...lineStyle('#F97316') }] },
+      options: opts(150)
+    });
+
+    if (line2Inst) line2Inst.destroy();
+    line2Inst = new Chart(document.getElementById('lineChart2').getContext('2d'), {
+      type: 'line',
+      data: { labels: WEEKLY.map(w => w.week), datasets: [{ label: 'CSAT %', data: WEEKLY.map(w => w.csat), ...lineStyle('#FACC15') }] },
+      options: opts(88)
+    });
+  }
+
+  function renderCategories() {
+    const t = totals();
+    document.getElementById('catGrid').innerHTML = CATEGORIES.map(c => `
+      <div class="cat-card" style="border:1px solid ${c.color}25">
+        <div class="cat-card-header">
+          <div class="cat-card-title" style="color:${c.color}">${c.name}</div>
+          <div class="cat-card-pct" style="color:${c.color}">${c.value}%</div>
+        </div>
+        <div class="cat-bar-bg">
+          <div class="cat-bar-fill" style="width:${Math.min(c.value*3,100)}%;background:${c.color}"></div>
+        </div>
+        <div class="cat-count">이번 달 예상 ${Math.round(t.total * c.value / 100)}건</div>
+      </div>`).join('');
+  }
+
+  // ── Tab switch ────────────────────────────────────────────
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    // re-render charts when tab becomes visible
+    setTimeout(() => {
+      if (id === 'overview') { renderBarChart(); renderPieChart(); }
+      if (id === 'trends') renderTrends();
+    }, 50);
+  }
+
+  // ── Sort ──────────────────────────────────────────────────
+  function sortAgents(key, btn) {
+    sortKey = key;
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderAgentTable();
+  }
+
+  // ── Init ──────────────────────────────────────────────────
+  renderAll();
+</script>
+</body>
+</html>
