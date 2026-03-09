@@ -10,16 +10,13 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
-    body {
-      background: radial-gradient(ellipse at 20% 10%, #0F1A0A 0%, #080B10 40%, #0A0D14 100%);
-      color: #E5E7EB;
-      font-family: 'DM Sans', sans-serif;
-      min-height: 100vh;
-    }
+    body { background: radial-gradient(ellipse at 20% 10%, #0F1A0A 0%, #080B10 40%, #0A0D14 100%); color: #E5E7EB; font-family: 'DM Sans', sans-serif; min-height: 100vh; }
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-thumb { background: #1F2937; border-radius: 4px; }
     .container { max-width: 1120px; margin: 0 auto; padding: 28px 24px; }
-    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+
+    /* Header */
+    .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
     .header-left .brand-label { font-size: 11px; color: #F97316; font-family: 'DM Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
     .header-left h1 { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; color: #F9FAFB; line-height: 1.1; }
     .last-updated { color: #374151; font-size: 12px; margin-top: 5px; font-family: 'DM Mono', monospace; }
@@ -33,20 +30,37 @@
     .status-error .status-dot { background: #F87171; }
     .status-error span { color: #F87171; }
     @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+
+    /* Meta panel */
     .meta-panel { background: rgba(255,255,255,0.02); border: 1px solid #1F2937; border-radius: 12px; padding: 14px 20px; display: flex; flex-direction: column; gap: 6px; }
     .meta-row { display: flex; gap: 20px; flex-wrap: wrap; }
     .meta-item { font-size: 11px; font-family: 'DM Mono', monospace; }
     .meta-key { color: #374151; }
     .meta-val { color: #6B7280; margin-left: 6px; }
+
+    /* Week selector */
+    .week-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+    .week-label { font-size: 11px; color: #4B5563; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+    .week-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+    .week-btn { background: none; border: 1px solid #1F2937; cursor: pointer; padding: 5px 14px; border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 12px; color: #4B5563; transition: all 0.18s; white-space: nowrap; }
+    .week-btn:hover { border-color: #F97316; color: #F97316; }
+    .week-btn.active { background: rgba(249,115,22,0.15); border-color: #F97316; color: #F97316; font-weight: 600; }
+    .week-range { font-size: 11px; color: #374151; font-family: 'DM Mono', monospace; margin-left: 4px; }
+
+    /* Tabs */
     .tabs { display: flex; gap: 2px; margin-bottom: 24px; background: rgba(255,255,255,0.02); padding: 4px; border-radius: 10px; width: fit-content; }
     .tab-btn { background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #4B5563; transition: all 0.18s; }
     .tab-btn.active { background: rgba(249,115,22,0.1); color: #F97316; font-weight: 600; }
+
+    /* Metrics */
     .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 20px; }
     .metric-card { background: rgba(255,255,255,0.03); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 6px; transition: all 0.2s; cursor: default; }
     .metric-icon { font-size: 20px; }
     .metric-label { font-size: 11px; color: #4B5563; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
     .metric-value { font-size: 32px; font-weight: 800; font-family: 'Syne', sans-serif; line-height: 1.1; }
     .metric-sub { font-size: 11px; color: #374151; }
+
+    /* Charts */
     .charts-row { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; }
     .chart-card { background: rgba(255,255,255,0.02); border: 1px solid #1F2937; border-radius: 14px; padding: 22px; }
     .chart-card h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #D1D5DB; margin-bottom: 18px; }
@@ -55,10 +69,14 @@
     .cat-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
     .cat-name { color: #6B7280; flex: 1; }
     .cat-pct { color: #9CA3AF; font-family: 'DM Mono', monospace; }
+
+    /* Sort */
     .sort-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
     .sort-label { color: #4B5563; font-size: 12px; font-family: 'DM Mono', monospace; margin-right: 4px; }
     .sort-btn { background: none; border: 1px solid #1F2937; cursor: pointer; padding: 4px 12px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 11px; color: #4B5563; transition: all 0.18s; }
     .sort-btn:hover, .sort-btn.active { background: rgba(249,115,22,0.12); border-color: #F97316; color: #F97316; }
+
+    /* Table */
     .table-wrap { background: rgba(255,255,255,0.01); border: 1px solid #1F2937; border-radius: 14px; overflow: hidden; }
     table { width: 100%; border-collapse: collapse; }
     thead tr { border-bottom: 1px solid #1F2937; }
@@ -68,6 +86,8 @@
     tbody tr:hover { background: rgba(249,115,22,0.03); }
     td { padding: 15px 16px; } td.center { text-align: center; }
     .csat-badge { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace; }
+
+    /* Trends */
     .trend-section { display: flex; flex-direction: column; gap: 16px; }
     .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
     .cat-card { border-radius: 14px; padding: 20px; background: rgba(255,255,255,0.02); }
@@ -77,19 +97,26 @@
     .cat-bar-bg { background: rgba(255,255,255,0.04); border-radius: 3px; height: 4px; margin-bottom: 12px; }
     .cat-bar-fill { height: 100%; border-radius: 3px; }
     .cat-count { font-size: 12px; color: #4B5563; }
+
+    /* Footer */
     .footer { margin-top: 28px; padding: 14px 16px; background: rgba(255,255,255,0.01); border-radius: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
     .footer span { font-size: 11px; color: #1F2937; font-family: 'DM Mono', monospace; }
+
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
+    .no-data { text-align: center; padding: 60px; color: #374151; font-family: 'DM Mono', monospace; font-size: 13px; }
+
     @media (max-width: 700px) { .charts-row { grid-template-columns: 1fr; } .header { flex-direction: column; } }
   </style>
 </head>
 <body>
 <div class="container">
+
+  <!-- Header -->
   <div class="header">
     <div class="header-left">
       <div class="brand-label">
-        <span>inZOI · Korean Support · Meta-M</span>
+        <span>inZOI · All Agents</span>
         <div class="status-badge status-live" id="statusBadge">
           <div class="status-dot"></div>
           <span id="statusText">로딩 중</span>
@@ -101,8 +128,8 @@
     <div class="meta-panel">
       <div class="meta-row">
         <div class="meta-item"><span class="meta-key">BRAND</span><span class="meta-val" id="metaBrand">—</span></div>
-        <div class="meta-item"><span class="meta-key">GROUP</span><span class="meta-val" id="metaGroup">—</span></div>
-        <div class="meta-item"><span class="meta-key">VENDOR</span><span class="meta-val" id="metaVendor">—</span></div>
+        <div class="meta-item"><span class="meta-key">WEEK</span><span class="meta-val" id="metaWeek">—</span></div>
+        
       </div>
       <div class="meta-row">
         <div class="meta-item"><span class="meta-key">GENERATED</span><span class="meta-val" id="metaGenerated">—</span></div>
@@ -111,6 +138,14 @@
     </div>
   </div>
 
+  <!-- Week Selector -->
+  <div class="week-bar">
+    <span class="week-label">주차 선택</span>
+    <div class="week-btns" id="weekBtns"></div>
+    <span class="week-range" id="weekRange"></span>
+  </div>
+
+  <!-- Tabs -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('overview',this)">개요</button>
     <button class="tab-btn" onclick="switchTab('agents',this)">상담원별</button>
@@ -154,8 +189,8 @@
 
   <div class="tab-panel" id="tab-trends">
     <div class="trend-section">
-      <div class="chart-card"><h3>주간 티켓 추이</h3><div style="position:relative;height:230px"><canvas id="lineChart1"></canvas></div></div>
-      <div class="chart-card"><h3>주간 CSAT 추이 (%)</h3><div style="position:relative;height:200px"><canvas id="lineChart2"></canvas></div></div>
+      <div class="chart-card"><h3>주차별 총 티켓 추이</h3><div style="position:relative;height:230px"><canvas id="lineChart1"></canvas></div></div>
+      <div class="chart-card"><h3>주차별 평균 CSAT 추이 (%)</h3><div style="position:relative;height:200px"><canvas id="lineChart2"></canvas></div></div>
     </div>
   </div>
 
@@ -164,77 +199,119 @@
   </div>
 
   <div class="footer">
-    <span>pubgsupport.zendesk.com · Brand 34778016702361 · Group: Korean Support</span>
+    <span>pubgsupport.zendesk.com · Brand 34778016702361 · inZOI</span>
     <span id="footerStatus">로딩 중...</span>
   </div>
 </div>
 
 <script>
-  const WEEKLY = [
-    {week:"1주",tickets:189,csat:94.1},{week:"2주",tickets:214,csat:95.3},
-    {week:"3주",tickets:198,csat:93.7},{week:"4주",tickets:231,csat:96.2},
-  ];
   const CATEGORIES = [
     {name:"계정/로그인",value:31,color:"#F97316"},{name:"결제/환불",value:27,color:"#FACC15"},
     {name:"게임 오류",value:22,color:"#38BDF8"},{name:"해킹/제재",value:13,color:"#F87171"},
     {name:"기타",value:7,color:"#64748B"},
   ];
-  const FALLBACK_AGENTS = [
-    {name:"김민준",tickets:142,avgFRT:"4.2h",csat:"96.5%",csatResponses:86},
-    {name:"이서연",tickets:128,avgFRT:"5.1h",csat:"91.2%",csatResponses:68},
-    {name:"박지호",tickets:156,avgFRT:"3.8h",csat:"98.1%",csatResponses:104},
-    {name:"최수아",tickets:99, avgFRT:"6.3h",csat:"83.4%",csatResponses:54},
-    {name:"정태양",tickets:134,avgFRT:"4.7h",csat:"94.0%",csatResponses:79},
-  ];
+  const FALLBACK = { weeks: [{
+    agents: [
+      {name:"김민준",tickets:142,avgFRT:"4.2h",csat:"96.5%",csatResponses:86},
+      {name:"이서연",tickets:128,avgFRT:"5.1h",csat:"91.2%",csatResponses:68},
+      {name:"박지호",tickets:156,avgFRT:"3.8h",csat:"98.1%",csatResponses:104},
+      {name:"최수아",tickets:99, avgFRT:"6.3h",csat:"83.4%",csatResponses:54},
+      {name:"정태양",tickets:134,avgFRT:"4.7h",csat:"94.0%",csatResponses:79},
+    ],
+    meta: { brand:'inZOI', weekLabel:'2026-W10', vendor:'Meta-M', generatedAt: new Date().toISOString(), totalTickets:659 }
+  }]};
 
-  let agentData = [];
+  let allWeeks = [];
+  let currentWeekIdx = 0;
   let sortKey = "tickets";
   let barInst=null, pieInst=null, l1=null, l2=null;
 
+  // ── Load ──────────────────────────────────────────────────
   async function loadData() {
     try {
       const res = await fetch('./data.json?t=' + Date.now());
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const json = await res.json();
-      agentData = json.agents || [];
-      if (!agentData.length) throw new Error('데이터 없음');
-
-      const m = json.meta || {};
-      set('metaBrand', m.brand||'—'); set('metaGroup', m.group||'—');
-      set('metaVendor', m.vendor||'—');
-      set('metaTotal', (m.totalTickets||0).toLocaleString()+'건');
-      if (m.generatedAt) {
-        const d = new Date(m.generatedAt).toLocaleString('ko-KR');
-        set('metaGenerated', d); set('lastUpdated', '마지막 업데이트: '+d);
-      }
+      allWeeks = (json.weeks || []).sort((a,b) => b.meta.weekLabel.localeCompare(a.meta.weekLabel));
+      if (!allWeeks.length) throw new Error('데이터 없음');
       setBadge('live', '라이브 데이터');
       set('footerStatus', '✓ Zendesk 실시간 데이터 · n8n 자동 업데이트');
     } catch(e) {
-      agentData = FALLBACK_AGENTS;
+      allWeeks = FALLBACK.weeks;
       setBadge('error', '샘플 데이터');
-      set('metaBrand','PUBG'); set('metaGroup','Korean Support');
-      set('metaVendor','Meta-M'); set('metaTotal','659건'); set('metaGenerated','샘플');
       set('footerStatus', '⚠ data.json 없음 — 샘플 데이터 표시 중');
       console.warn('data.json 로드 실패:', e.message);
     }
+    renderWeekBtns();
+    selectWeek(0);
+  }
+
+  // ── Week buttons ──────────────────────────────────────────
+  function renderWeekBtns() {
+    document.getElementById('weekBtns').innerHTML = allWeeks.map((w, i) => {
+      const label = formatWeekLabel(w.meta.weekLabel);
+      return `<button class="week-btn${i===0?' active':''}" onclick="selectWeek(${i}, this)">${label}</button>`;
+    }).join('');
+  }
+
+  function formatWeekLabel(weekLabel) {
+    // "2026-W11" → "2026년 11주차"
+    const [year, week] = weekLabel.split('-W');
+    return `${year}년 ${parseInt(week)}주차`;
+  }
+
+  function getWeekDateRange(weekLabel) {
+    const [year, week] = weekLabel.split('-W');
+    const jan1 = new Date(year, 0, 1);
+    const startDay = new Date(jan1.getTime() + (parseInt(week) - 1) * 7 * 86400000);
+    const endDay = new Date(startDay.getTime() + 6 * 86400000);
+    const fmt = d => `${d.getMonth()+1}/${d.getDate()}`;
+    return `${fmt(startDay)} ~ ${fmt(endDay)}`;
+  }
+
+  function selectWeek(idx, btn) {
+    currentWeekIdx = idx;
+    document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    else document.querySelectorAll('.week-btn')[idx]?.classList.add('active');
+
+    const w = allWeeks[idx];
+    set('weekRange', getWeekDateRange(w.meta.weekLabel));
+    updateMeta(w.meta);
     renderAll();
   }
 
-  function set(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
-  function setBadge(type, label) {
-    const b=document.getElementById('statusBadge');
-    b.className='status-badge status-'+type;
-    set('statusText', label);
+  function updateMeta(m) {
+    set('metaBrand', m.brand||'—');
+    set('metaWeek', formatWeekLabel(m.weekLabel||''));
+    
+    set('metaTotal', (m.totalTickets||0).toLocaleString()+'건');
+    if (m.generatedAt) {
+      const d = new Date(m.generatedAt).toLocaleString('ko-KR');
+      set('metaGenerated', d);
+      set('lastUpdated', '마지막 업데이트: '+d);
+    }
   }
 
+  // ── Helpers ───────────────────────────────────────────────
+  function currentAgents() { return allWeeks[currentWeekIdx]?.agents || []; }
+
   function totals() {
-    const total = agentData.reduce((s,a)=>s+a.tickets,0);
-    const avgFRT = agentData.length ? (agentData.reduce((s,a)=>s+parseFloat(a.avgFRT),0)/agentData.length).toFixed(1) : '0.0';
-    const cv = agentData.map(a=>parseFloat(a.csat)).filter(v=>!isNaN(v));
+    const data = currentAgents();
+    const total = data.reduce((s,a)=>s+a.tickets,0);
+    const avgFRT = data.length ? (data.reduce((s,a)=>s+parseFloat(a.avgFRT),0)/data.length).toFixed(1) : '0.0';
+    const cv = data.map(a=>parseFloat(a.csat)).filter(v=>!isNaN(v));
     const avgCsat = cv.length ? (cv.reduce((s,v)=>s+v,0)/cv.length).toFixed(1) : 'N/A';
     return {total, avgFRT, avgCsat};
   }
 
+  function set(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
+  function setBadge(type, label) {
+    document.getElementById('statusBadge').className='status-badge status-'+type;
+    set('statusText', label);
+  }
+
+  // ── Render ────────────────────────────────────────────────
   function renderAll() {
     renderMetrics(); renderBarChart(); renderPieChart();
     renderAgentTable(); renderTrends(); renderCategories();
@@ -242,11 +319,12 @@
 
   function renderMetrics() {
     const t = totals();
+    const data = currentAgents();
     const cards = [
-      {icon:'🎫',label:'총 처리 티켓',value:t.total.toLocaleString(),sub:`상담원 ${agentData.length}명`,color:'#F97316'},
+      {icon:'🎫',label:'총 처리 티켓',value:t.total.toLocaleString(),sub:`상담원 ${data.length}명`,color:'#F97316'},
       {icon:'⚡',label:'평균 FRT',value:`${t.avgFRT}h`,sub:'첫 응답 시간',color:'#38BDF8'},
       {icon:'⭐',label:'평균 CSAT',value:`${t.avgCsat}%`,sub:'만족도 응답 기준',color:'#FACC15'},
-      {icon:'🏢',label:'브랜드',value:'inZOI',sub:'Brand ID: 34778016702361',color:'#4ADE80'},
+      {icon:'📅',label:'주차',value:formatWeekLabel(allWeeks[currentWeekIdx]?.meta?.weekLabel||''),sub:document.getElementById('weekRange')?.textContent||'',color:'#4ADE80'},
     ];
     document.getElementById('metricsGrid').innerHTML = cards.map(c=>`
       <div class="metric-card" style="border:1px solid ${c.color}20"
@@ -260,12 +338,13 @@
   }
 
   function renderBarChart() {
+    const data = currentAgents();
     if(barInst) barInst.destroy();
     barInst = new Chart(document.getElementById('barChart').getContext('2d'), {
       type:'bar',
-      data:{labels:agentData.map(a=>a.name),datasets:[{label:'티켓',data:agentData.map(a=>a.tickets),backgroundColor:'rgba(249,115,22,0.75)',borderRadius:4}]},
+      data:{labels:data.map(a=>a.name),datasets:[{label:'티켓',data:data.map(a=>a.tickets),backgroundColor:'rgba(249,115,22,0.75)',borderRadius:4}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-        scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4B5563'}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4B5563'}}}}
+        scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4B5563',maxRotation:45}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4B5563'}}}}
     });
   }
 
@@ -284,12 +363,13 @@
   }
 
   function renderAgentTable() {
-    const sorted = [...agentData].sort((a,b)=>{
+    const sorted = [...currentAgents()].sort((a,b)=>{
       if(sortKey==='tickets') return b.tickets-a.tickets;
       if(sortKey==='csat') return parseFloat(b.csat)-parseFloat(a.csat);
       if(sortKey==='frt') return parseFloat(a.avgFRT)-parseFloat(b.avgFRT);
       return 0;
     });
+    if(!sorted.length) { document.getElementById('agentTableBody').innerHTML = `<tr><td colspan="6" class="no-data">데이터가 없어요</td></tr>`; return; }
     document.getElementById('agentTableBody').innerHTML = sorted.map((a,i)=>{
       const cv=parseFloat(a.csat), cc=cv>=95?'#4ADE80':cv>=85?'#FACC15':'#F87171';
       const fv=parseFloat(a.avgFRT), fc=fv<=4?'#4ADE80':fv<=6?'#FACC15':'#F87171';
@@ -305,15 +385,25 @@
   }
 
   function renderTrends() {
+    // 모든 주차 데이터로 추이 그래프 (최신순 → 역순으로 표시)
+    const weeks = [...allWeeks].reverse();
+    const labels = weeks.map(w => formatWeekLabel(w.meta.weekLabel));
+    const ticketData = weeks.map(w => w.meta.totalTickets || w.agents.reduce((s,a)=>s+a.tickets,0));
+    const csatData = weeks.map(w => {
+      const cv = w.agents.map(a=>parseFloat(a.csat)).filter(v=>!isNaN(v));
+      return cv.length ? parseFloat((cv.reduce((s,v)=>s+v,0)/cv.length).toFixed(1)) : 0;
+    });
+
     const lo = (yMin) => ({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4B5563'}},y:{min:yMin,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4B5563'}}}});
-    const ls = (c) => ({borderColor:c,backgroundColor:c+'15',pointBackgroundColor:c,borderWidth:2.5,pointRadius:4,tension:0.3,fill:true});
+    const ls = (c) => ({borderColor:c,backgroundColor:c+'15',pointBackgroundColor:c,borderWidth:2.5,pointRadius:5,tension:0.3,fill:true});
+
     if(l1) l1.destroy();
     l1 = new Chart(document.getElementById('lineChart1').getContext('2d'),{type:'line',
-      data:{labels:WEEKLY.map(w=>w.week),datasets:[{label:'티켓',data:WEEKLY.map(w=>w.tickets),...ls('#F97316')}]},options:lo(150)});
+      data:{labels,datasets:[{label:'티켓',data:ticketData,...ls('#F97316')}]},options:lo(0)});
     if(l2) l2.destroy();
     l2 = new Chart(document.getElementById('lineChart2').getContext('2d'),{type:'line',
-      data:{labels:WEEKLY.map(w=>w.week),datasets:[{label:'CSAT %',data:WEEKLY.map(w=>w.csat),...ls('#FACC15')}]},options:lo(88)});
+      data:{labels,datasets:[{label:'CSAT %',data:csatData,...ls('#FACC15')}]},options:lo(0)});
   }
 
   function renderCategories() {
@@ -325,7 +415,7 @@
           <div class="cat-card-pct" style="color:${c.color}">${c.value}%</div>
         </div>
         <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${Math.min(c.value*3,100)}%;background:${c.color}"></div></div>
-        <div class="cat-count">이번 달 예상 ${Math.round(t.total*c.value/100)}건</div>
+        <div class="cat-count">이번 주 예상 ${Math.round(t.total*c.value/100)}건</div>
       </div>`).join('');
   }
 
