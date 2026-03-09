@@ -3,51 +3,121 @@
     {
       "agents": [
         {
+          "name": "Agent_44463624587545",
+          "tickets": 24,
+          "avgFRT": "1.3h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_38168223504665",
+          "tickets": 14,
+          "avgFRT": "0.8h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
           "name": "Agent_44460259667481",
+          "tickets": 12,
+          "avgFRT": "1.2h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_44463662421145",
+          "tickets": 8,
+          "avgFRT": "1.1h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_369037039893",
+          "tickets": 8,
+          "avgFRT": "1.0h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_901612989883",
+          "tickets": 6,
+          "avgFRT": "0.6h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_null",
+          "tickets": 6,
+          "avgFRT": "0.6h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_366412332054",
+          "tickets": 4,
+          "avgFRT": "1.2h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_367938165113",
+          "tickets": 3,
+          "avgFRT": "1.0h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_47509765892121",
           "tickets": 3,
           "avgFRT": "1.1h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
-          "name": "Agent_38168223504665",
-          "tickets": 2,
-          "avgFRT": "0.0h",
+          "name": "Agent_52519366291353",
+          "tickets": 3,
+          "avgFRT": "1.9h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
-          "name": "Agent_901612989883",
+          "name": "Agent_903290408963",
           "tickets": 2,
-          "avgFRT": "0.8h",
+          "avgFRT": "0.7h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
-          "name": "Agent_null",
+          "name": "Agent_48244670426777",
+          "tickets": 2,
+          "avgFRT": "1.7h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_1900364088208",
+          "tickets": 2,
+          "avgFRT": "1.3h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_17886159375385",
           "tickets": 1,
-          "avgFRT": "0.2h",
+          "avgFRT": "0.7h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
           "name": "Agent_903405426126",
           "tickets": 1,
-          "avgFRT": "0.5h",
+          "avgFRT": "1.3h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
-          "name": "Agent_44463662421145",
+          "name": "Agent_49126077866009",
           "tickets": 1,
-          "avgFRT": "0.2h",
-          "csat": "N/A",
-          "csatResponses": 0
-        },
-        {
-          "name": "Agent_369037039893",
-          "tickets": 1,
-          "avgFRT": "0.7h",
+          "avgFRT": "1.9h",
           "csat": "N/A",
           "csatResponses": 0
         }
@@ -56,10 +126,10 @@
         "brand": "inZOI",
         "brandId": 34778016702361,
         "group": "All",
-        "generatedAt": "2026-03-09T09:03:32.078Z",
+        "generatedAt": "2026-03-09T09:51:22.684Z",
         "weekLabel": "2026-W10",
-        "totalAgents": 7,
-        "totalTickets": 11
+        "totalAgents": 17,
+        "totalTickets": 100
       }
     }
   ]
