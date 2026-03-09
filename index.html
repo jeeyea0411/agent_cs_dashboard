@@ -5,106 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>inZOI Korean Support · Meta-M Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Nanum+Gothic:wght@400;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
-    body { background: radial-gradient(ellipse at 20% 10%, #0F1A0A 0%, #080B10 40%, #0A0D14 100%); color: #E5E7EB; font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+    body { background: linear-gradient(135deg, #e8f4fd 0%, #dbeeff 40%, #eef6ff 100%); color: #1a3a5c; font-family: 'DM Sans', sans-serif; min-height: 100vh; }
     ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-thumb { background: #1F2937; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: #b8d8f0; border-radius: 4px; }
     .container { max-width: 1120px; margin: 0 auto; padding: 28px 24px; }
 
     /* Header */
     .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
-    .header-left .brand-label { font-size: 11px; color: #F97316; font-family: 'DM Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-    .header-left h1 { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; color: #F9FAFB; line-height: 1.1; }
-    .last-updated { color: #374151; font-size: 12px; margin-top: 5px; font-family: 'DM Mono', monospace; }
+    .header-left .brand-label { font-size: 11px; color: #0ea5e9; font-family: 'DM Mono', monospace; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .header-left h1 { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; color: #0c2d4e; line-height: 1.1; }
+    .last-updated { color: #7db3d4; font-size: 12px; margin-top: 5px; font-family: 'DM Mono', monospace; }
     .status-badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 20px; padding: 4px 12px; }
     .status-dot { width: 7px; height: 7px; border-radius: 50%; }
     .status-badge span { font-size: 12px; font-family: 'DM Mono', monospace; }
-    .status-live { background: #14290F; border: 1px solid rgba(74,222,128,0.3); }
-    .status-live .status-dot { background: #4ADE80; box-shadow: 0 0 6px #4ADE80; animation: pulse 2s infinite; }
-    .status-live span { color: #4ADE80; }
-    .status-error { background: #2D1515; border: 1px solid rgba(248,113,113,0.3); }
-    .status-error .status-dot { background: #F87171; }
-    .status-error span { color: #F87171; }
+    .status-live { background: rgba(14,165,233,0.12); border: 1px solid rgba(14,165,233,0.35); }
+    .status-live .status-dot { background: #0ea5e9; box-shadow: 0 0 6px #0ea5e9; animation: pulse 2s infinite; }
+    .status-live span { color: #0284c7; }
+    .status-error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3); }
+    .status-error .status-dot { background: #ef4444; }
+    .status-error span { color: #ef4444; }
     @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
 
     /* Meta panel */
-    .meta-panel { background: rgba(255,255,255,0.02); border: 1px solid #1F2937; border-radius: 12px; padding: 14px 20px; display: flex; flex-direction: column; gap: 6px; }
+    .meta-panel { background: rgba(255,255,255,0.6); border: 1px solid rgba(14,165,233,0.2); border-radius: 12px; padding: 14px 20px; display: flex; flex-direction: column; gap: 6px; backdrop-filter: blur(8px); }
     .meta-row { display: flex; gap: 20px; flex-wrap: wrap; }
     .meta-item { font-size: 11px; font-family: 'DM Mono', monospace; }
-    .meta-key { color: #374151; }
-    .meta-val { color: #6B7280; margin-left: 6px; }
+    .meta-key { color: #7db3d4; }
+    .meta-val { color: #1a6fa0; margin-left: 6px; font-weight: 600; }
 
     /* Week selector */
-    .week-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
-    .week-label { font-size: 11px; color: #4B5563; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
-    .week-btns { display: flex; gap: 6px; flex-wrap: wrap; }
-    .week-btn { background: none; border: 1px solid #1F2937; cursor: pointer; padding: 5px 14px; border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 12px; color: #4B5563; transition: all 0.18s; white-space: nowrap; }
-    .week-btn:hover { border-color: #F97316; color: #F97316; }
-    .week-btn.active { background: rgba(249,115,22,0.15); border-color: #F97316; color: #F97316; font-weight: 600; }
-    .week-range { font-size: 11px; color: #374151; font-family: 'DM Mono', monospace; margin-left: 4px; }
+    .week-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+    .week-label { font-size: 11px; color: #7db3d4; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+    .week-select { background: rgba(255,255,255,0.7); border: 1px solid rgba(14,165,233,0.3); border-radius: 8px; color: #1a3a5c; padding: 7px 32px 7px 12px; font-size: 13px; font-family: 'DM Mono', monospace; outline: none; cursor: pointer; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230ea5e9' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; transition: border-color 0.18s; backdrop-filter: blur(4px); }
+    .week-select:hover, .week-select:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
+    .week-select option { background: #e8f4fd; color: #1a3a5c; }
+    .week-range { font-size: 11px; color: #7db3d4; font-family: 'DM Mono', monospace; }
 
     /* Tabs */
-    .tabs { display: flex; gap: 2px; margin-bottom: 24px; background: rgba(255,255,255,0.02); padding: 4px; border-radius: 10px; width: fit-content; }
-    .tab-btn { background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #4B5563; transition: all 0.18s; }
-    .tab-btn.active { background: rgba(249,115,22,0.1); color: #F97316; font-weight: 600; }
+    .tabs { display: flex; gap: 2px; margin-bottom: 24px; background: rgba(255,255,255,0.5); padding: 4px; border-radius: 10px; width: fit-content; border: 1px solid rgba(14,165,233,0.15); }
+    .tab-btn { background: none; border: none; cursor: pointer; padding: 8px 16px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: #7db3d4; transition: all 0.18s; }
+    .tab-btn.active { background: rgba(14,165,233,0.15); color: #0284c7; font-weight: 600; }
+    .tab-btn:hover { color: #0ea5e9; }
 
     /* Metrics */
     .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 20px; }
-    .metric-card { background: rgba(255,255,255,0.03); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 6px; transition: all 0.2s; cursor: default; }
+    .metric-card { background: rgba(255,255,255,0.65); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 6px; transition: all 0.2s; cursor: default; border: 1px solid rgba(14,165,233,0.15); backdrop-filter: blur(8px); box-shadow: 0 2px 12px rgba(14,165,233,0.08); }
+    .metric-card:hover { box-shadow: 0 4px 20px rgba(14,165,233,0.18); transform: translateY(-2px); }
     .metric-icon { font-size: 20px; }
-    .metric-label { font-size: 11px; color: #4B5563; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
-    .metric-value { font-size: 32px; font-weight: 800; font-family: 'Syne', sans-serif; line-height: 1.1; }
-    .metric-sub { font-size: 11px; color: #374151; }
+    .metric-label { font-size: 11px; color: #7db3d4; font-family: 'DM Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+    .metric-value { font-size: 36px; font-weight: 800; font-family: 'Nanum Gothic', sans-serif; line-height: 1.1; }
+    .metric-sub { font-size: 11px; color: #a8c8e0; }
 
     /* Charts */
     .charts-row { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; }
-    .chart-card { background: rgba(255,255,255,0.02); border: 1px solid #1F2937; border-radius: 14px; padding: 22px; }
-    .chart-card h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #D1D5DB; margin-bottom: 18px; }
+    .chart-card { background: rgba(255,255,255,0.65); border: 1px solid rgba(14,165,233,0.15); border-radius: 16px; padding: 22px; backdrop-filter: blur(8px); box-shadow: 0 2px 12px rgba(14,165,233,0.06); }
+    .chart-card h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #1a3a5c; margin-bottom: 18px; }
     .cat-legend { display: flex; flex-direction: column; gap: 5px; margin-top: 10px; }
     .cat-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; }
     .cat-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-    .cat-name { color: #6B7280; flex: 1; }
-    .cat-pct { color: #9CA3AF; font-family: 'DM Mono', monospace; }
+    .cat-name { color: #4a8aad; flex: 1; }
+    .cat-pct { color: #1a6fa0; font-family: 'DM Mono', monospace; font-weight: 600; }
 
     /* Sort */
     .sort-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
-    .sort-label { color: #4B5563; font-size: 12px; font-family: 'DM Mono', monospace; margin-right: 4px; }
-    .sort-btn { background: none; border: 1px solid #1F2937; cursor: pointer; padding: 4px 12px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 11px; color: #4B5563; transition: all 0.18s; }
-    .sort-btn:hover, .sort-btn.active { background: rgba(249,115,22,0.12); border-color: #F97316; color: #F97316; }
+    .sort-label { color: #7db3d4; font-size: 12px; font-family: 'DM Mono', monospace; margin-right: 4px; }
+    .sort-btn { background: rgba(255,255,255,0.6); border: 1px solid rgba(14,165,233,0.2); cursor: pointer; padding: 4px 12px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 11px; color: #4a8aad; transition: all 0.18s; }
+    .sort-btn:hover, .sort-btn.active { background: rgba(14,165,233,0.12); border-color: #0ea5e9; color: #0284c7; }
 
     /* Table */
-    .table-wrap { background: rgba(255,255,255,0.01); border: 1px solid #1F2937; border-radius: 14px; overflow: hidden; }
+    .table-wrap { background: rgba(255,255,255,0.65); border: 1px solid rgba(14,165,233,0.15); border-radius: 16px; overflow: hidden; backdrop-filter: blur(8px); box-shadow: 0 2px 12px rgba(14,165,233,0.06); }
     table { width: 100%; border-collapse: collapse; }
-    thead tr { border-bottom: 1px solid #1F2937; }
-    th { padding: 13px 16px; font-size: 11px; color: #374151; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; font-family: 'DM Mono', monospace; }
+    thead tr { border-bottom: 1px solid rgba(14,165,233,0.15); background: rgba(14,165,233,0.05); }
+    th { padding: 13px 16px; font-size: 11px; color: #7db3d4; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; font-family: 'DM Mono', monospace; }
     th.left { text-align: left; } th.center { text-align: center; }
-    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.12s; }
-    tbody tr:hover { background: rgba(249,115,22,0.03); }
+    tbody tr { border-bottom: 1px solid rgba(14,165,233,0.08); transition: background 0.12s; }
+    tbody tr:hover { background: rgba(14,165,233,0.05); }
     td { padding: 15px 16px; } td.center { text-align: center; }
     .csat-badge { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; font-family: 'DM Mono', monospace; }
 
     /* Trends */
     .trend-section { display: flex; flex-direction: column; gap: 16px; }
     .cat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
-    .cat-card { border-radius: 14px; padding: 20px; background: rgba(255,255,255,0.02); }
+    .cat-card { border-radius: 16px; padding: 20px; background: rgba(255,255,255,0.65); backdrop-filter: blur(8px); box-shadow: 0 2px 12px rgba(14,165,233,0.06); }
     .cat-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
     .cat-card-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
     .cat-card-pct { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 800; }
-    .cat-bar-bg { background: rgba(255,255,255,0.04); border-radius: 3px; height: 4px; margin-bottom: 12px; }
+    .cat-bar-bg { background: rgba(14,165,233,0.1); border-radius: 3px; height: 4px; margin-bottom: 12px; }
     .cat-bar-fill { height: 100%; border-radius: 3px; }
-    .cat-count { font-size: 12px; color: #4B5563; }
+    .cat-count { font-size: 12px; color: #7db3d4; }
 
     /* Footer */
-    .footer { margin-top: 28px; padding: 14px 16px; background: rgba(255,255,255,0.01); border-radius: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-    .footer span { font-size: 11px; color: #1F2937; font-family: 'DM Mono', monospace; }
+    .footer { margin-top: 28px; padding: 14px 16px; background: rgba(255,255,255,0.4); border-radius: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; border: 1px solid rgba(14,165,233,0.1); }
+    .footer span { font-size: 11px; color: #a8c8e0; font-family: 'DM Mono', monospace; }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
-    .no-data { text-align: center; padding: 60px; color: #374151; font-family: 'DM Mono', monospace; font-size: 13px; }
+    .no-data { text-align: center; padding: 60px; color: #7db3d4; font-family: 'DM Mono', monospace; font-size: 13px; }
 
     @media (max-width: 700px) { .charts-row { grid-template-columns: 1fr; } .header { flex-direction: column; } }
   </style>
@@ -141,7 +142,7 @@
   <!-- Week Selector -->
   <div class="week-bar">
     <span class="week-label">주차 선택</span>
-    <div class="week-btns" id="weekBtns"></div>
+    <select class="week-select" id="weekSelect" onchange="selectWeekByLabel(this.value)"></select>
     <span class="week-range" id="weekRange"></span>
   </div>
 
@@ -206,9 +207,9 @@
 
 <script>
   const CATEGORIES = [
-    {name:"계정/로그인",value:31,color:"#F97316"},{name:"결제/환불",value:27,color:"#FACC15"},
-    {name:"게임 오류",value:22,color:"#38BDF8"},{name:"해킹/제재",value:13,color:"#F87171"},
-    {name:"기타",value:7,color:"#64748B"},
+    {name:"계정/로그인",value:31,color:"#0ea5e9"},{name:"결제/환불",value:27,color:"#6366f1"},
+    {name:"게임 오류",value:22,color:"#06b6d4"},{name:"해킹/제재",value:13,color:"#f43f5e"},
+    {name:"기타",value:7,color:"#94a3b8"},
   ];
   const FALLBACK = { weeks: [{
     agents: [
@@ -243,21 +244,69 @@
       console.warn('data.json 로드 실패:', e.message);
     }
     renderWeekBtns();
-    selectWeek(0);
+    // 가장 최근 데이터 주차 선택
+    currentWeekIdx = 0;
+    const w = allWeeks[0];
+    set('weekRange', getWeekDateRange(w.meta.weekLabel));
+    updateMeta(w.meta);
+    renderAll();
   }
 
-  // ── Week buttons ──────────────────────────────────────────
+  // ── Week dropdown ─────────────────────────────────────────
+  function getCurrentWeekLabel() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const jan1 = new Date(year, 0, 1);
+    const week = Math.ceil(((now - jan1) / 86400000 + jan1.getDay() + 1) / 7);
+    return `${year}-W${String(week).padStart(2, '0')}`;
+  }
+
+  function getAllWeeksFrom(startYear) {
+    const result = [];
+    const currentWeek = getCurrentWeekLabel();
+    let year = startYear, week = 1;
+    while (true) {
+      const label = `${year}-W${String(week).padStart(2, '0')}`;
+      if (label > currentWeek) break;
+      result.push(label);
+      week++;
+      const maxWeek = new Date(year, 11, 28).getDay() === 4 ? 53 : 52;
+      if (week > maxWeek) { year++; week = 1; }
+    }
+    return result.reverse(); // 최신순
+  }
+
   function renderWeekBtns() {
-    document.getElementById('weekBtns').innerHTML = allWeeks.map((w, i) => {
-      const label = formatWeekLabel(w.meta.weekLabel);
-      return `<button class="week-btn${i===0?' active':''}" onclick="selectWeek(${i}, this)">${label}</button>`;
+    const dataMap = {};
+    allWeeks.forEach(w => { dataMap[w.meta.weekLabel] = true; });
+
+    const allWeekLabels = getAllWeeksFrom(2026);
+    const select = document.getElementById('weekSelect');
+
+    select.innerHTML = allWeekLabels.map(label => {
+      const hasData = dataMap[label];
+      const text = formatWeekLabel(label) + (hasData ? '' : ' (데이터 없음)');
+      return `<option value="${label}" ${!hasData ? 'disabled' : ''}>${text}</option>`;
     }).join('');
+
+    // 가장 최근 데이터 있는 주차 선택
+    const firstWithData = allWeekLabels.find(l => dataMap[l]);
+    if (firstWithData) select.value = firstWithData;
+  }
+
+  function selectWeekByLabel(weekLabel) {
+    const idx = allWeeks.findIndex(w => w.meta.weekLabel === weekLabel);
+    if (idx === -1) return;
+    currentWeekIdx = idx;
+    const w = allWeeks[idx];
+    set('weekRange', getWeekDateRange(w.meta.weekLabel));
+    updateMeta(w.meta);
+    renderAll();
   }
 
   function formatWeekLabel(weekLabel) {
-    // "2026-W11" → "2026년 11주차"
     const [year, week] = weekLabel.split('-W');
-    return `${year}년 ${parseInt(week)}주차`;
+    return `${String(year).slice(2)}년 ${parseInt(week)}주차`;
   }
 
   function getWeekDateRange(weekLabel) {
@@ -274,7 +323,6 @@
     document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
     else document.querySelectorAll('.week-btn')[idx]?.classList.add('active');
-
     const w = allWeeks[idx];
     set('weekRange', getWeekDateRange(w.meta.weekLabel));
     updateMeta(w.meta);
@@ -321,10 +369,10 @@
     const t = totals();
     const data = currentAgents();
     const cards = [
-      {icon:'🎫',label:'총 처리 티켓',value:t.total.toLocaleString(),sub:`상담원 ${data.length}명`,color:'#F97316'},
-      {icon:'⚡',label:'평균 FRT',value:`${t.avgFRT}h`,sub:'첫 응답 시간',color:'#38BDF8'},
-      {icon:'⭐',label:'평균 CSAT',value:`${t.avgCsat}%`,sub:'만족도 응답 기준',color:'#FACC15'},
-      {icon:'📅',label:'주차',value:formatWeekLabel(allWeeks[currentWeekIdx]?.meta?.weekLabel||''),sub:document.getElementById('weekRange')?.textContent||'',color:'#4ADE80'},
+      {icon:'🎫',label:'총 처리 티켓',value:t.total.toLocaleString(),sub:`상담원 ${data.length}명`,color:'#0ea5e9'},
+      {icon:'⚡',label:'평균 FRT',value:`${t.avgFRT}h`,sub:'첫 응답 시간',color:'#6366f1'},
+      {icon:'⭐',label:'평균 CSAT',value:`${t.avgCsat}%`,sub:'만족도 응답 기준',color:'#06b6d4'},
+      {icon:'📅',label:'주차',value:formatWeekLabel(allWeeks[currentWeekIdx]?.meta?.weekLabel||''),sub:document.getElementById('weekRange')?.textContent||'',color:'#0284c7'},
     ];
     document.getElementById('metricsGrid').innerHTML = cards.map(c=>`
       <div class="metric-card" style="border:1px solid ${c.color}20"
@@ -342,9 +390,9 @@
     if(barInst) barInst.destroy();
     barInst = new Chart(document.getElementById('barChart').getContext('2d'), {
       type:'bar',
-      data:{labels:data.map(a=>a.name),datasets:[{label:'티켓',data:data.map(a=>a.tickets),backgroundColor:'rgba(249,115,22,0.75)',borderRadius:4}]},
+      data:{labels:data.map(a=>a.name),datasets:[{label:'티켓',data:data.map(a=>a.tickets),backgroundColor:'rgba(14,165,233,0.7)',borderRadius:4}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-        scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4B5563',maxRotation:45}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4B5563'}}}}
+        scales:{x:{grid:{color:'rgba(14,165,233,0.08)'},ticks:{color:'#7db3d4',maxRotation:45}},y:{grid:{color:'rgba(14,165,233,0.08)'},ticks:{color:'#7db3d4'}}}}
     });
   }
 
@@ -371,15 +419,15 @@
     });
     if(!sorted.length) { document.getElementById('agentTableBody').innerHTML = `<tr><td colspan="6" class="no-data">데이터가 없어요</td></tr>`; return; }
     document.getElementById('agentTableBody').innerHTML = sorted.map((a,i)=>{
-      const cv=parseFloat(a.csat), cc=cv>=95?'#4ADE80':cv>=85?'#FACC15':'#F87171';
-      const fv=parseFloat(a.avgFRT), fc=fv<=4?'#4ADE80':fv<=6?'#FACC15':'#F87171';
+      const cv=parseFloat(a.csat), cc=cv>=95?'#0ea5e9':cv>=85?'#6366f1':'#f43f5e';
+      const fv=parseFloat(a.avgFRT), fc=fv<=4?'#0ea5e9':fv<=6?'#6366f1':'#f43f5e';
       return `<tr>
-        <td style="color:${i===0?'#FACC15':'#374151'};font-family:'DM Mono',monospace;font-size:13px">${i===0?'🥇':'0'+(i+1)}</td>
-        <td style="font-weight:600;color:#F3F4F6;font-size:14px">${a.name}</td>
-        <td class="center" style="color:#F97316;font-weight:700;font-family:'DM Mono',monospace">${a.tickets}</td>
+        <td style="color:${i===0?'#0ea5e9':'#a8c8e0'};font-family:'DM Mono',monospace;font-size:13px">${i===0?'🥇':'0'+(i+1)}</td>
+        <td style="font-weight:600;color:#0c2d4e;font-size:14px">${a.name}</td>
+        <td class="center" style="color:#0284c7;font-weight:700;font-family:'DM Mono',monospace">${a.tickets}</td>
         <td class="center" style="color:${fc};font-family:'DM Mono',monospace">${a.avgFRT}</td>
-        <td class="center"><span class="csat-badge" style="background:${cc}20;color:${cc}">${a.csat}</span></td>
-        <td class="center" style="color:#4B5563;font-family:'DM Mono',monospace">${a.csatResponses}</td>
+        <td class="center"><span class="csat-badge" style="background:${cc}18;color:${cc}">${a.csat}</span></td>
+        <td class="center" style="color:#7db3d4;font-family:'DM Mono',monospace">${a.csatResponses}</td>
       </tr>`;
     }).join('');
   }
@@ -395,15 +443,15 @@
     });
 
     const lo = (yMin) => ({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4B5563'}},y:{min:yMin,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4B5563'}}}});
-    const ls = (c) => ({borderColor:c,backgroundColor:c+'15',pointBackgroundColor:c,borderWidth:2.5,pointRadius:5,tension:0.3,fill:true});
+      scales:{x:{grid:{color:'rgba(14,165,233,0.08)'},ticks:{color:'#7db3d4'}},y:{min:yMin,grid:{color:'rgba(14,165,233,0.08)'},ticks:{color:'#7db3d4'}}}});
+    const ls = (c) => ({borderColor:c,backgroundColor:c+'25',pointBackgroundColor:c,borderWidth:2.5,pointRadius:5,tension:0.3,fill:true});
 
     if(l1) l1.destroy();
     l1 = new Chart(document.getElementById('lineChart1').getContext('2d'),{type:'line',
-      data:{labels,datasets:[{label:'티켓',data:ticketData,...ls('#F97316')}]},options:lo(0)});
+      data:{labels,datasets:[{label:'티켓',data:ticketData,...ls('#0ea5e9')}]},options:lo(0)});
     if(l2) l2.destroy();
     l2 = new Chart(document.getElementById('lineChart2').getContext('2d'),{type:'line',
-      data:{labels,datasets:[{label:'CSAT %',data:csatData,...ls('#FACC15')}]},options:lo(0)});
+      data:{labels,datasets:[{label:'CSAT %',data:csatData,...ls('#06b6d4')}]},options:lo(0)});
   }
 
   function renderCategories() {
