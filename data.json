@@ -9,7 +9,7 @@
     },
     {
       "name": "Agent_902497430346",
-      "tickets": 25,
+      "tickets": 26,
       "avgFRT": "0.0h",
       "csat": "N/A",
       "csatResponses": 0
@@ -23,7 +23,7 @@
     },
     {
       "name": "Agent_378140884654",
-      "tickets": 13,
+      "tickets": 10,
       "avgFRT": "0.0h",
       "csat": "N/A",
       "csatResponses": 0
@@ -44,7 +44,7 @@
     },
     {
       "name": "Agent_360045537194",
-      "tickets": 1,
+      "tickets": 3,
       "avgFRT": "0.0h",
       "csat": "N/A",
       "csatResponses": 0
@@ -55,7 +55,7 @@
     "brandId": 114094569274,
     "group": "Korean Support",
     "vendor": "Meta-M",
-    "generatedAt": "2026-03-09T08:12:39.030Z",
+    "generatedAt": "2026-03-09T08:16:26.316Z",
     "totalAgents": 7,
     "totalTickets": 100
   }
