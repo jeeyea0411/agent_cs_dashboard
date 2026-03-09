@@ -1,20 +1,59 @@
 {
-  "agents": [
+  "weeks": [
     {
-      "name": "Agent_369037039893",
-      "tickets": 1,
-      "avgFRT": "0.0h",
-      "csat": "N/A",
-      "csatResponses": 0
+      "agents": [
+        {
+          "name": "Agent_44460259667481",
+          "tickets": 3,
+          "avgFRT": "0.0h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_38168223504665",
+          "tickets": 2,
+          "avgFRT": "0.0h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_901612989883",
+          "tickets": 2,
+          "avgFRT": "0.0h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_null",
+          "tickets": 1,
+          "avgFRT": "0.0h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_44463662421145",
+          "tickets": 1,
+          "avgFRT": "0.0h",
+          "csat": "N/A",
+          "csatResponses": 0
+        },
+        {
+          "name": "Agent_369037039893",
+          "tickets": 1,
+          "avgFRT": "0.0h",
+          "csat": "N/A",
+          "csatResponses": 0
+        }
+      ],
+      "meta": {
+        "brand": "inZOI",
+        "brandId": 34778016702361,
+        "group": "All",
+        "generatedAt": "2026-03-09T08:44:41.344Z",
+        "weekLabel": "2026-W10",
+        "totalAgents": 6,
+        "totalTickets": 10
+      }
     }
-  ],
-  "meta": {
-    "brand": "inZOI",
-    "brandId": 34778016702361,
-    "group": "Korean Support",
-    "vendor": "Meta-M",
-    "generatedAt": "2026-03-09T08:29:42.884Z",
-    "totalAgents": 1,
-    "totalTickets": 1
-  }
+  ]
 }
