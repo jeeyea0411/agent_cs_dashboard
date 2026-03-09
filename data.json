@@ -1,1 +1,62 @@
-{}
+{
+  "agents": [
+    {
+      "name": "Agent_902231140126",
+      "tickets": 32,
+      "avgFRT": "0.0h",
+      "csat": "N/A",
+      "csatResponses": 0
+    },
+    {
+      "name": "Agent_902497430346",
+      "tickets": 25,
+      "avgFRT": "0.0h",
+      "csat": "N/A",
+      "csatResponses": 0
+    },
+    {
+      "name": "Agent_null",
+      "tickets": 18,
+      "avgFRT": "0.0h",
+      "csat": "N/A",
+      "csatResponses": 0
+    },
+    {
+      "name": "Agent_378140884654",
+      "tickets": 13,
+      "avgFRT": "0.0h",
+      "csat": "N/A",
+      "csatResponses": 0
+    },
+    {
+      "name": "Agent_54073700376729",
+      "tickets": 7,
+      "avgFRT": "0.0h",
+      "csat": "N/A",
+      "csatResponses": 0
+    },
+    {
+      "name": "Agent_369037039893",
+      "tickets": 4,
+      "avgFRT": "0.0h",
+      "csat": "N/A",
+      "csatResponses": 0
+    },
+    {
+      "name": "Agent_360045537194",
+      "tickets": 1,
+      "avgFRT": "0.0h",
+      "csat": "N/A",
+      "csatResponses": 0
+    }
+  ],
+  "meta": {
+    "brand": "PUBG",
+    "brandId": 114094569274,
+    "group": "Korean Support",
+    "vendor": "Meta-M",
+    "generatedAt": "2026-03-09T08:12:39.030Z",
+    "totalAgents": 7,
+    "totalTickets": 100
+  }
+}
