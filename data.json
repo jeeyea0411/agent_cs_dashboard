@@ -5,23 +5,23 @@
         {
           "name": "Agent_44463662421145",
           "tickets": 11,
-          "avgFRT": "1.0h",
+          "avgFRT": "1.1h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
           "name": "Agent_44460259667481",
           "tickets": 8,
-          "avgFRT": "1.1h",
+          "avgFRT": "1.2h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
           "name": "Agent_null",
           "tickets": 6,
-          "avgFRT": "0.5h",
-          "csat": "N/A",
-          "csatResponses": 0
+          "avgFRT": "0.6h",
+          "csat": "100.0%",
+          "csatResponses": 1
         },
         {
           "name": "Agent_903405426126",
@@ -41,15 +41,15 @@
           "name": "Agent_38168223504665",
           "tickets": 4,
           "avgFRT": "1.4h",
-          "csat": "0.0%",
-          "csatResponses": 1
+          "csat": "N/A",
+          "csatResponses": 0
         },
         {
           "name": "Agent_47509765892121",
           "tickets": 2,
           "avgFRT": "0.8h",
-          "csat": "N/A",
-          "csatResponses": 0
+          "csat": "0.0%",
+          "csatResponses": 1
         },
         {
           "name": "Agent_366412332054",
@@ -84,7 +84,7 @@
         "brand": "inZOI",
         "brandId": 34778016702361,
         "group": "All",
-        "generatedAt": "2026-03-09T10:06:17.114Z",
+        "generatedAt": "2026-03-11T01:29:08.291Z",
         "weekLabel": "2026-W10",
         "totalAgents": 11,
         "totalTickets": 48
