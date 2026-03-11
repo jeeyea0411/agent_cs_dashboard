@@ -107,7 +107,16 @@
     .tab-panel.active { display: block; }
     .no-data { text-align: center; padding: 60px; color: #7db3d4; font-family: 'DM Mono', monospace; font-size: 13px; }
 
-    @media (max-width: 700px) { .charts-row { grid-template-columns: 1fr; } .header { flex-direction: column; } }
+    /* TOP3 / BOTTOM3 */
+    .tb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .tb-card { background: rgba(255,255,255,0.65); border: 1px solid rgba(14,165,233,0.15); border-radius: 16px; padding: 18px 20px; backdrop-filter: blur(8px); }
+    .tb-card h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: #1a3a5c; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+    .tb-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(14,165,233,0.08); }
+    .tb-item:last-child { border-bottom: none; }
+    .tb-rank { font-family: 'DM Mono', monospace; font-size: 12px; color: #7db3d4; width: 20px; flex-shrink: 0; }
+    .tb-name { font-size: 13px; font-weight: 600; color: #1a3a5c; flex: 1; }
+    .tb-val { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 700; }
+    @media (max-width: 700px) { .tb-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -156,7 +165,12 @@
 
   <div class="tab-panel active" id="tab-overview">
     <div class="metrics-grid" id="metricsGrid"></div>
-    <div class="charts-row">
+
+    <!-- TOP3 / BOTTOM3 -->
+    <div class="tb-row" id="topBottomRow"></div>
+
+    <!-- Row 1: 처리건수 + 문의유형 -->
+    <div class="charts-row" style="margin-bottom:16px">
       <div class="chart-card">
         <h3>상담원별 처리 건수</h3>
         <div style="position:relative;height:210px"><canvas id="barChart"></canvas></div>
@@ -166,6 +180,25 @@
         <div style="position:relative;height:140px"><canvas id="pieChart"></canvas></div>
         <div class="cat-legend" id="catLegend"></div>
       </div>
+    </div>
+
+    <!-- Row 2: CSAT 막대 + CSAT 분포 -->
+    <div class="charts-row" style="margin-bottom:16px">
+      <div class="chart-card">
+        <h3>상담원별 CSAT (%)</h3>
+        <div style="position:relative;height:210px"><canvas id="csatBarChart"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>CSAT 분포</h3>
+        <div style="position:relative;height:160px"><canvas id="csatDonutChart"></canvas></div>
+        <div class="cat-legend" id="csatLegend"></div>
+      </div>
+    </div>
+
+    <!-- Row 3: FRT 막대 -->
+    <div class="chart-card">
+      <h3>상담원별 평균 FRT (시간)</h3>
+      <div style="position:relative;height:210px"><canvas id="frtBarChart"></canvas></div>
     </div>
   </div>
 
@@ -359,9 +392,13 @@
     set('statusText', label);
   }
 
+  let csatBarInst=null, csatDonutInst=null, frtBarInst=null;
+
   // ── Render ────────────────────────────────────────────────
   function renderAll() {
-    renderMetrics(); renderBarChart(); renderPieChart();
+    renderMetrics(); renderTopBottom();
+    renderBarChart(); renderPieChart();
+    renderCsatBarChart(); renderCsatDonut(); renderFrtBarChart();
     renderAgentTable(); renderTrends(); renderCategories();
   }
 
@@ -410,7 +447,104 @@
       </div>`).join('');
   }
 
-  function renderAgentTable() {
+  function renderTopBottom() {
+    const data = currentAgents();
+    const withCsat = data.filter(a => a.csat !== 'N/A').sort((a,b) => parseFloat(b.csat) - parseFloat(a.csat));
+    const top3 = withCsat.slice(0, 3);
+    const bottom3 = [...withCsat].reverse().slice(0, 3);
+
+    const makeItems = (list, color) => list.map((a, i) => `
+      <div class="tb-item">
+        <span class="tb-rank">${i+1}</span>
+        <span class="tb-name">${a.name}</span>
+        <span class="tb-val" style="color:${color}">${a.csat}</span>
+      </div>`).join('');
+
+    document.getElementById('topBottomRow').innerHTML = `
+      <div class="tb-card">
+        <h3>🏆 TOP 3 CSAT</h3>
+        ${top3.length ? makeItems(top3, '#0ea5e9') : '<div class="no-data" style="padding:20px">데이터 없음</div>'}
+      </div>
+      <div class="tb-card">
+        <h3>⚠️ BOTTOM 3 CSAT</h3>
+        ${bottom3.length ? makeItems(bottom3, '#f43f5e') : '<div class="no-data" style="padding:20px">데이터 없음</div>'}
+      </div>`;
+  }
+
+  function renderCsatBarChart() {
+    const data = [...currentAgents()].sort((a,b) => parseFloat(b.csat||0) - parseFloat(a.csat||0));
+    if(csatBarInst) csatBarInst.destroy();
+    csatBarInst = new Chart(document.getElementById('csatBarChart').getContext('2d'), {
+      type:'bar',
+      data:{
+        labels: data.map(a=>a.name),
+        datasets:[{
+          label:'CSAT %',
+          data: data.map(a => a.csat === 'N/A' ? 0 : parseFloat(a.csat)),
+          backgroundColor: data.map(a => {
+            const v = parseFloat(a.csat);
+            return v >= 90 ? 'rgba(14,165,233,0.7)' : v >= 70 ? 'rgba(99,102,241,0.7)' : 'rgba(244,63,94,0.7)';
+          }),
+          borderRadius: 4
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{
+          x:{grid:{color:'rgba(14,165,233,0.08)'},ticks:{color:'#7db3d4',maxRotation:45}},
+          y:{min:0,max:100,grid:{color:'rgba(14,165,233,0.08)'},ticks:{color:'#7db3d4',callback:v=>v+'%'}}
+        }
+      }
+    });
+  }
+
+  function renderCsatDonut() {
+    const data = currentAgents();
+    let good = 0, bad = 0;
+    data.forEach(a => { good += a.csatResponses * (parseFloat(a.csat)||0) / 100; bad += a.csatResponses * (1 - (parseFloat(a.csat)||0) / 100); });
+    good = Math.round(good); bad = Math.round(bad);
+    if(csatDonutInst) csatDonutInst.destroy();
+    csatDonutInst = new Chart(document.getElementById('csatDonutChart').getContext('2d'), {
+      type:'doughnut',
+      data:{
+        labels:['좋음','나쁨'],
+        datasets:[{data:[good, bad], backgroundColor:['rgba(14,165,233,0.8)','rgba(244,63,94,0.7)'], borderWidth:0}]
+      },
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'60%'}
+    });
+    document.getElementById('csatLegend').innerHTML = `
+      <div class="cat-legend-item"><div class="cat-dot" style="background:#0ea5e9"></div><span class="cat-name">좋음</span><span class="cat-pct">${good}건</span></div>
+      <div class="cat-legend-item"><div class="cat-dot" style="background:#f43f5e"></div><span class="cat-name">나쁨</span><span class="cat-pct">${bad}건</span></div>`;
+  }
+
+  function renderFrtBarChart() {
+    const data = [...currentAgents()].sort((a,b) => parseFloat(a.avgFRT||0) - parseFloat(b.avgFRT||0));
+    if(frtBarInst) frtBarInst.destroy();
+    frtBarInst = new Chart(document.getElementById('frtBarChart').getContext('2d'), {
+      type:'bar',
+      data:{
+        labels: data.map(a=>a.name),
+        datasets:[{
+          label:'FRT (h)',
+          data: data.map(a => parseFloat(a.avgFRT)||0),
+          backgroundColor: data.map(a => {
+            const v = parseFloat(a.avgFRT);
+            return v <= 4 ? 'rgba(14,165,233,0.7)' : v <= 8 ? 'rgba(99,102,241,0.7)' : 'rgba(244,63,94,0.7)';
+          }),
+          borderRadius: 4
+        }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{
+          x:{grid:{color:'rgba(14,165,233,0.08)'},ticks:{color:'#7db3d4',maxRotation:45}},
+          y:{grid:{color:'rgba(14,165,233,0.08)'},ticks:{color:'#7db3d4',callback:v=>v+'h'}}
+        }
+      }
+    });
+  }
     const sorted = [...currentAgents()].sort((a,b)=>{
       if(sortKey==='tickets') return b.tickets-a.tickets;
       if(sortKey==='csat') return parseFloat(b.csat)-parseFloat(a.csat);
@@ -472,7 +606,10 @@
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     document.getElementById('tab-'+id).classList.add('active');
     btn.classList.add('active');
-    setTimeout(()=>{ if(id==='overview'){renderBarChart();renderPieChart();} if(id==='trends')renderTrends(); },50);
+    setTimeout(()=>{
+      if(id==='overview'){ renderBarChart(); renderPieChart(); renderCsatBarChart(); renderCsatDonut(); renderFrtBarChart(); }
+      if(id==='trends') renderTrends();
+    },50);
   }
 
   function sortAgents(key, btn) {
