@@ -3,79 +3,79 @@
     {
       "agents": [
         {
-          "name": "Agent_44463662421145",
+          "name": "[KRAFTON] Brusimo",
           "tickets": 11,
-          "avgFRT": "1.1h",
+          "avgFRT": "64.8h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
-          "name": "Agent_44460259667481",
+          "name": "[KRAFTON] BlissBay",
           "tickets": 8,
-          "avgFRT": "1.2h",
+          "avgFRT": "71.6h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
           "name": "Agent_null",
           "tickets": 6,
-          "avgFRT": "0.6h",
+          "avgFRT": "36.5h",
           "csat": "100.0%",
           "csatResponses": 1
         },
         {
-          "name": "Agent_903405426126",
+          "name": "HappyHelper",
           "tickets": 5,
-          "avgFRT": "0.7h",
+          "avgFRT": "43.2h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
-          "name": "Agent_369037039893",
+          "name": "Krafton Support1",
           "tickets": 4,
-          "avgFRT": "1.0h",
+          "avgFRT": "57.2h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
-          "name": "Agent_38168223504665",
+          "name": "[KRAFTON] Raphael",
           "tickets": 4,
-          "avgFRT": "1.4h",
+          "avgFRT": "83.0h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
-          "name": "Agent_47509765892121",
+          "name": "Oslo",
           "tickets": 2,
-          "avgFRT": "0.8h",
+          "avgFRT": "47.2h",
           "csat": "0.0%",
           "csatResponses": 1
         },
         {
-          "name": "Agent_366412332054",
+          "name": "Buddy",
           "tickets": 2,
-          "avgFRT": "0.7h",
+          "avgFRT": "42.2h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
           "name": "Agent_901612989883",
           "tickets": 2,
-          "avgFRT": "4.8h",
+          "avgFRT": "289.7h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
-          "name": "Agent_367938165113",
+          "name": "Stardust",
           "tickets": 2,
-          "avgFRT": "0.8h",
+          "avgFRT": "47.1h",
           "csat": "N/A",
           "csatResponses": 0
         },
         {
-          "name": "Agent_48244670426777",
+          "name": "Krafton support_20",
           "tickets": 2,
-          "avgFRT": "1.4h",
+          "avgFRT": "85.5h",
           "csat": "N/A",
           "csatResponses": 0
         }
@@ -84,7 +84,7 @@
         "brand": "inZOI",
         "brandId": 34778016702361,
         "group": "All",
-        "generatedAt": "2026-03-11T01:29:08.291Z",
+        "generatedAt": "2026-03-11T02:00:50.270Z",
         "weekLabel": "2026-W10",
         "totalAgents": 11,
         "totalTickets": 48
