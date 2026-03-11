@@ -207,14 +207,15 @@
       <span class="sort-label">정렬:</span>
       <button class="sort-btn active" onclick="sortAgents('tickets',this)">처리건수</button>
       <button class="sort-btn" onclick="sortAgents('csat',this)">CSAT</button>
-      <button class="sort-btn" onclick="sortAgents('frt',this)">응답시간</button>
+      <button class="sort-btn" onclick="sortAgents('frt',this)">FRT</button>
+      <button class="sort-btn" onclick="sortAgents('rt',this)">RT</button>
     </div>
     <div class="table-wrap">
       <table>
         <thead><tr>
           <th class="left">#</th><th class="left">상담원</th>
           <th class="center">처리 건수</th><th class="center">평균 FRT</th>
-          <th class="center">CSAT</th><th class="center">CSAT 응답수</th>
+          <th class="center">평균 RT</th><th class="center">CSAT</th><th class="center">CSAT 응답수</th>
         </tr></thead>
         <tbody id="agentTableBody"></tbody>
       </table>
@@ -382,9 +383,10 @@
     const data = currentAgents();
     const total = data.reduce((s,a)=>s+a.tickets,0);
     const avgFRT = data.length ? (data.reduce((s,a)=>s+parseFloat(a.avgFRT),0)/data.length).toFixed(1) : '0.0';
+    const avgRT = data.length ? (data.reduce((s,a)=>s+parseFloat(a.avgRT||0),0)/data.length).toFixed(1) : '0.0';
     const cv = data.map(a=>parseFloat(a.csat)).filter(v=>!isNaN(v));
     const avgCsat = cv.length ? (cv.reduce((s,v)=>s+v,0)/cv.length).toFixed(1) : 'N/A';
-    return {total, avgFRT, avgCsat};
+    return {total, avgFRT, avgRT, avgCsat};
   }
 
   function set(id, val) { const el=document.getElementById(id); if(el) el.textContent=val; }
@@ -409,6 +411,7 @@
     const cards = [
       {icon:'🎫',label:'총 처리 티켓',value:t.total.toLocaleString(),sub:`상담원 ${data.length}명`,color:'#0ea5e9'},
       {icon:'⚡',label:'평균 FRT',value:`${t.avgFRT}h`,sub:'첫 응답 시간',color:'#6366f1'},
+      {icon:'🕐',label:'평균 RT',value:`${t.avgRT}h`,sub:'전체 해결 시간',color:'#f59e0b'},
       {icon:'⭐',label:'평균 CSAT',value:`${t.avgCsat}%`,sub:'만족도 응답 기준',color:'#06b6d4'},
       {icon:'📅',label:'주차',value:formatWeekLabel(allWeeks[currentWeekIdx]?.meta?.weekLabel||''),sub:document.getElementById('weekRange')?.textContent||'',color:'#0284c7'},
     ];
@@ -552,19 +555,22 @@
       if(sortKey==='tickets') return b.tickets-a.tickets;
       if(sortKey==='csat') return parseFloat(b.csat)-parseFloat(a.csat);
       if(sortKey==='frt') return parseFloat(a.avgFRT)-parseFloat(b.avgFRT);
+      if(sortKey==='rt') return parseFloat(a.avgRT||0)-parseFloat(b.avgRT||0);
       return 0;
     });
-    if(!sorted.length) { document.getElementById('agentTableBody').innerHTML = `<tr><td colspan="6" class="no-data">데이터가 없어요</td></tr>`; return; }
+    if(!sorted.length) { document.getElementById('agentTableBody').innerHTML = `<tr><td colspan="7" class="no-data">데이터가 없어요</td></tr>`; return; }
     document.getElementById('agentTableBody').innerHTML = sorted.map((a,i)=>{
       const cv=parseFloat(a.csat), cc=cv>=95?'#0ea5e9':cv>=85?'#6366f1':'#f43f5e';
       const fv=parseFloat(a.avgFRT), fc=fv<=4?'#0ea5e9':fv<=6?'#6366f1':'#f43f5e';
+      const rv=parseFloat(a.avgRT||0), rc=rv<=8?'#0ea5e9':rv<=24?'#6366f1':'#f43f5e';
       return `<tr>
-        <td style="color:${i===0?'#0ea5e9':'#a8c8e0'};font-family:'DM Mono',monospace;font-size:13px">${i===0?'🥇':'0'+(i+1)}</td>
+        <td style="color:${i===0?'#0ea5e9':'#a8c8e0'};font-size:13px">${i===0?'🥇':'0'+(i+1)}</td>
         <td style="font-weight:600;color:#0c2d4e;font-size:14px">${a.name}</td>
-        <td class="center" style="color:#0284c7;font-weight:700;font-family:'DM Mono',monospace">${a.tickets}</td>
-        <td class="center" style="color:${fc};font-family:'DM Mono',monospace">${a.avgFRT}</td>
+        <td class="center" style="color:#0284c7;font-weight:700">${a.tickets}</td>
+        <td class="center" style="color:${fc}">${a.avgFRT}</td>
+        <td class="center" style="color:${rc}">${a.avgRT||'N/A'}</td>
         <td class="center"><span class="csat-badge" style="background:${cc}18;color:${cc}">${a.csat}</span></td>
-        <td class="center" style="color:#7db3d4;font-family:'DM Mono',monospace">${a.csatResponses}</td>
+        <td class="center" style="color:#7db3d4">${a.csatResponses}</td>
       </tr>`;
     }).join('');
   }
