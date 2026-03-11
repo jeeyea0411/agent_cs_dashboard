@@ -545,6 +545,8 @@
       }
     });
   }
+
+  function renderAgentTable() {
     const sorted = [...currentAgents()].sort((a,b)=>{
       if(sortKey==='tickets') return b.tickets-a.tickets;
       if(sortKey==='csat') return parseFloat(b.csat)-parseFloat(a.csat);
