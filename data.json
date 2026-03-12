@@ -3,7 +3,7 @@
     {
       "agents": [
         {
-          "name": "Agent_44463662421145",
+          "name": "[KRAFTON] Brusimo",
           "tickets": 11,
           "avgFRT": "N/A",
           "avgRT": "64.8h",
@@ -11,7 +11,7 @@
           "csatResponses": 0
         },
         {
-          "name": "Agent_44460259667481",
+          "name": "[KRAFTON] BlissBay",
           "tickets": 8,
           "avgFRT": "N/A",
           "avgRT": "71.6h",
@@ -27,7 +27,7 @@
           "csatResponses": 0
         },
         {
-          "name": "Agent_903405426126",
+          "name": "HappyHelper",
           "tickets": 5,
           "avgFRT": "N/A",
           "avgRT": "43.2h",
@@ -35,7 +35,7 @@
           "csatResponses": 0
         },
         {
-          "name": "Agent_38168223504665",
+          "name": "[KRAFTON] Raphael",
           "tickets": 4,
           "avgFRT": "N/A",
           "avgRT": "83.0h",
@@ -43,7 +43,7 @@
           "csatResponses": 0
         },
         {
-          "name": "Agent_369037039893",
+          "name": "Krafton Support1",
           "tickets": 4,
           "avgFRT": "N/A",
           "avgRT": "57.2h",
@@ -59,7 +59,7 @@
           "csatResponses": 0
         },
         {
-          "name": "Agent_48244670426777",
+          "name": "Krafton support_20",
           "tickets": 2,
           "avgFRT": "N/A",
           "avgRT": "85.5h",
@@ -67,7 +67,7 @@
           "csatResponses": 0
         },
         {
-          "name": "Agent_367938165113",
+          "name": "Stardust",
           "tickets": 2,
           "avgFRT": "N/A",
           "avgRT": "47.1h",
@@ -75,7 +75,7 @@
           "csatResponses": 0
         },
         {
-          "name": "Agent_47509765892121",
+          "name": "Oslo",
           "tickets": 2,
           "avgFRT": "N/A",
           "avgRT": "47.2h",
@@ -83,7 +83,7 @@
           "csatResponses": 0
         },
         {
-          "name": "Agent_366412332054",
+          "name": "Buddy",
           "tickets": 2,
           "avgFRT": "N/A",
           "avgRT": "42.2h",
@@ -95,7 +95,7 @@
         "brand": "inZOI",
         "brandId": 34778016702361,
         "group": "All",
-        "generatedAt": "2026-03-12T02:52:20.028Z",
+        "generatedAt": "2026-03-12T03:02:16.314Z",
         "weekLabel": "2026-W10",
         "totalAgents": 11,
         "totalTickets": 48
