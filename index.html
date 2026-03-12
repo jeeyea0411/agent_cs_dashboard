@@ -10,7 +10,7 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
-    body { background: linear-gradient(135deg, #e8f4fd 0%, #dbeeff 40%, #eef6ff 100%); color: #1a3a5c; font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; }
+    body { background: linear-gradient(135deg, #e8f4fd 0%, #dbeeff 40%, #eef6ff 100%) fixed; background-attachment: fixed; color: #1a3a5c; font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; }
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-thumb { background: #b8d8f0; border-radius: 4px; }
     .container { max-width: 1120px; margin: 0 auto; padding: 28px 24px; }
@@ -54,11 +54,11 @@
 
     /* Metrics */
     .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 20px; }
-    .metric-card { background: rgba(255,255,255,0.65); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 6px; transition: all 0.2s; cursor: default; border: 1px solid rgba(14,165,233,0.15); backdrop-filter: blur(8px); box-shadow: 0 2px 12px rgba(14,165,233,0.08); }
-    .metric-card:hover { box-shadow: 0 4px 20px rgba(14,165,233,0.18); transform: translateY(-2px); }
+    .metric-card { background: rgba(255,255,255,0.85); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 6px; cursor: default; border: 1px solid rgba(14,165,233,0.15); backdrop-filter: blur(8px); box-shadow: 0 2px 12px rgba(14,165,233,0.08); user-select: none; -webkit-user-select: none; }
+    .metric-card:hover { box-shadow: 0 4px 20px rgba(14,165,233,0.18); }
     .metric-icon { font-size: 20px; }
     .metric-label { font-size: 11px; color: #7db3d4; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
-    .metric-value { font-size: 36px; font-weight: 800; font-family: 'Noto Sans KR', sans-serif; line-height: 1.1; }
+    .metric-value { font-size: 36px; font-weight: 800; font-family: 'Noto Sans KR', sans-serif; line-height: 1.1; white-space: pre-line; }
     .metric-sub { font-size: 11px; color: #a8c8e0; }
 
     /* Charts */
@@ -340,7 +340,7 @@
 
   function formatWeekLabel(weekLabel) {
     const [year, week] = weekLabel.split('-W');
-    return `${String(year).slice(2)}년 ${parseInt(week)}주차`;
+    return `${String(year).slice(2)}년\n${parseInt(week)}주차`;
   }
 
   function getWeekDateRange(weekLabel) {
@@ -382,8 +382,10 @@
   function totals() {
     const data = currentAgents();
     const total = data.reduce((s,a)=>s+a.tickets,0);
-    const avgFRT = data.length ? (data.reduce((s,a)=>s+parseFloat(a.avgFRT),0)/data.length).toFixed(1) : '0.0';
-    const avgRT = data.length ? (data.reduce((s,a)=>s+parseFloat(a.avgRT||0),0)/data.length).toFixed(1) : '0.0';
+    const frtVals = data.map(a=>parseFloat(a.avgFRT)).filter(v=>!isNaN(v) && v > 0);
+    const avgFRT = frtVals.length ? (frtVals.reduce((s,v)=>s+v,0)/frtVals.length).toFixed(1) : 'N/A';
+    const rtVals = data.map(a=>parseFloat(a.avgRT)).filter(v=>!isNaN(v) && v > 0);
+    const avgRT = rtVals.length ? (rtVals.reduce((s,v)=>s+v,0)/rtVals.length).toFixed(1) : 'N/A';
     const cv = data.map(a=>parseFloat(a.csat)).filter(v=>!isNaN(v));
     const avgCsat = cv.length ? (cv.reduce((s,v)=>s+v,0)/cv.length).toFixed(1) : 'N/A';
     return {total, avgFRT, avgRT, avgCsat};
@@ -410,15 +412,13 @@
     const data = currentAgents();
     const cards = [
       {icon:'🎫',label:'총 처리 티켓',value:t.total.toLocaleString(),sub:`상담원 ${data.length}명`,color:'#0ea5e9'},
-      {icon:'⚡',label:'평균 FRT',value:`${t.avgFRT}h`,sub:'첫 응답 시간',color:'#6366f1'},
-      {icon:'🕐',label:'평균 RT',value:`${t.avgRT}h`,sub:'전체 해결 시간',color:'#f59e0b'},
+      {icon:'⚡',label:'평균 FRT',value: t.avgFRT === 'N/A' ? 'N/A' : `${t.avgFRT}h`,sub:'첫 응답 시간',color:'#6366f1'},
+      {icon:'🕐',label:'평균 RT',value: t.avgRT === 'N/A' ? 'N/A' : `${t.avgRT}h`,sub:'전체 해결 시간',color:'#f59e0b'},
       {icon:'⭐',label:'평균 CSAT',value:`${t.avgCsat}%`,sub:'만족도 응답 기준',color:'#06b6d4'},
       {icon:'📅',label:'주차',value:formatWeekLabel(allWeeks[currentWeekIdx]?.meta?.weekLabel||''),sub:document.getElementById('weekRange')?.textContent||'',color:'#0284c7'},
     ];
     document.getElementById('metricsGrid').innerHTML = cards.map(c=>`
-      <div class="metric-card" style="border:1px solid ${c.color}20"
-        onmouseenter="this.style.background='${c.color}08';this.style.borderColor='${c.color}50'"
-        onmouseleave="this.style.background='rgba(255,255,255,0.03)';this.style.borderColor='${c.color}20'">
+      <div class="metric-card" style="border:1px solid ${c.color}25">
         <div class="metric-icon">${c.icon}</div>
         <div class="metric-label">${c.label}</div>
         <div class="metric-value" style="color:${c.color}">${c.value}</div>
@@ -455,7 +455,10 @@
     const data = currentAgents();
     const withCsat = data.filter(a => a.csat !== 'N/A').sort((a,b) => parseFloat(b.csat) - parseFloat(a.csat));
     const top3 = withCsat.slice(0, 3);
-    const bottom3 = [...withCsat].reverse().slice(0, 3);
+    // BOTTOM3: TOP3와 겹치지 않게, 낮은 순으로
+    const bottom3 = withCsat.length > 3
+      ? [...withCsat].reverse().slice(0, 3)
+      : [];
 
     const makeItems = (list, color) => list.map((a, i) => `
       <div class="tb-item">
@@ -471,7 +474,7 @@
       </div>
       <div class="tb-card">
         <h3>⚠️ BOTTOM 3 CSAT</h3>
-        ${bottom3.length ? makeItems(bottom3, '#f43f5e') : '<div class="no-data" style="padding:20px">데이터 없음</div>'}
+        ${bottom3.length ? makeItems(bottom3, '#f43f5e') : '<div style="padding:16px;color:#a8c8e0;font-size:13px">상담원이 3명 이하이거나 데이터가 없어요</div>'}
       </div>`;
   }
 
@@ -553,9 +556,21 @@
   function renderAgentTable() {
     const sorted = [...currentAgents()].sort((a,b)=>{
       if(sortKey==='tickets') return b.tickets-a.tickets;
-      if(sortKey==='csat') return parseFloat(b.csat)-parseFloat(a.csat);
-      if(sortKey==='frt') return parseFloat(a.avgFRT)-parseFloat(b.avgFRT);
-      if(sortKey==='rt') return parseFloat(a.avgRT||0)-parseFloat(b.avgRT||0);
+      if(sortKey==='csat') {
+        const av = a.csat === 'N/A' ? -1 : parseFloat(a.csat);
+        const bv = b.csat === 'N/A' ? -1 : parseFloat(b.csat);
+        return bv - av;
+      }
+      if(sortKey==='frt') {
+        const av = a.avgFRT === 'N/A' ? 9999 : parseFloat(a.avgFRT);
+        const bv = b.avgFRT === 'N/A' ? 9999 : parseFloat(b.avgFRT);
+        return av - bv;
+      }
+      if(sortKey==='rt') {
+        const av = a.avgRT === 'N/A' ? 9999 : parseFloat(a.avgRT||0);
+        const bv = b.avgRT === 'N/A' ? 9999 : parseFloat(b.avgRT||0);
+        return av - bv;
+      }
       return 0;
     });
     if(!sorted.length) { document.getElementById('agentTableBody').innerHTML = `<tr><td colspan="7" class="no-data">데이터가 없어요</td></tr>`; return; }
